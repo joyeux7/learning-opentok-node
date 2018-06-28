@@ -36,6 +36,10 @@ router.get('/', function (req, res) {
   res.render('index', { title: 'Learning-OpenTok-Node' });
 });
 
+router.get('/chatdemo', function (req, res) {
+  res.render('video', { title: 'Wangjiang chat demo' });
+});
+
 /**
  * GET /session redirects to /room/session
  */
