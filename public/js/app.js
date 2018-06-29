@@ -3,11 +3,27 @@
 var apiKey;
 var sessionId;
 var token;
+var socket;
+
+function a() {
+  socket.emit("message", {msg:'hello,man'});
+}
+
 
 function handleError(error) {
   if (error) {
     console.error(error);
   }
+}
+
+function initSocketIO() {
+  var host = window.location.host;
+  socket = io.connect(host);
+
+  socket.on('message', function(data){
+      alert(data);
+      document.getElementById('ultext').innerHTML = data;
+  });
 }
 
 function initializeSession() {
@@ -46,6 +62,8 @@ function initializeSession() {
   });
 }
 
+initSocketIO();
+
 // See the config.js file.
 if (API_KEY && TOKEN && SESSION_ID) {
   apiKey = API_KEY;
@@ -54,7 +72,7 @@ if (API_KEY && TOKEN && SESSION_ID) {
   initializeSession();
 } else if (SAMPLE_SERVER_BASE_URL) {
   // Make an Ajax request to get the OpenTok API key, session ID, and token from the server
-  fetch(SAMPLE_SERVER_BASE_URL + '/session').then(function fetch(res) {
+  fetch(SAMPLE_SERVER_BASE_URL + '/room/wjdemoroom').then(function fetch(res) {
     return res.json();
   }).then(function fetchJson(json) {
     apiKey = json.apiKey;

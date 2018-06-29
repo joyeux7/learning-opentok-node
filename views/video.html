@@ -3,9 +3,10 @@
 
 <head>
     <title> OpenTok Getting Started </title>
-    <link href="css/app.css" rel="stylesheet" type="text/css">
+    <link href="stylesheets/app.css" rel="stylesheet" type="text/css">
 
     <script src="https://static.opentok.com/v2/js/opentok.min.js"></script>
+    <script type="text/javascript" src="js/socket.io.js"></script>
 
     <!-- Polyfill for fetch API so that we can fetch the sessionId and token in IE11 -->
     <script src="https://cdn.jsdelivr.net/npm/promise-polyfill@7/dist/polyfill.min.js" charset="utf-8"></script>
@@ -13,6 +14,12 @@
 </head>
 
 <body>
+
+    <button onclick="a()" style="clear:both;width:150px;z-index: 10;">按钮</button>
+    <p id="ultext" style="height:50px;z-index:10">
+    </p>
+
+    <div style="clear:both"></div>
 
     <div id="videos">
         <div id="subscriber"></div>
