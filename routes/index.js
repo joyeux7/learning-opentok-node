@@ -40,6 +40,10 @@ router.get('/chatdemo', function (req, res) {
   res.render('video', { title: 'Wangjiang chat demo' });
 });
 
+router.get('/agorademo', function (req, res) {
+  res.render('agora', { title: 'Wangjiang chat demo' });
+});
+
 /**
  * GET /session redirects to /room/session
  */
