@@ -5,6 +5,8 @@
 <link rel="stylesheet" href="stylesheets/bootstrap.min.css">
 <script src="js/AgoraRTCSDK-2.3.1.js"></script>
 <script src="js/jquery.js"></script>
+<script type="text/javascript" src="js/socket.io.js"></script>
+
 </head>
 
 <body>
@@ -19,6 +21,9 @@
 
 <div id="div_join" class="panel panel-default">
 <div class="panel-body">
+
+    <button id="join" class="btn btn-primary" onclick="calluser1001()">Call ID=1001的用户</button>
+
 Key: <input id="key" type="text" value="2576414954004eb5b71a7d83d27674e0" size="36"></input>
 Channel: <input id="channel" type="text" value="1001" size="4"></input>
 Host: <input id="video" type="checkbox" checked></input>
@@ -67,10 +72,24 @@ AgoraRTC.Logger.warning('this is warning');
 AgoraRTC.Logger.info('this is info');
 AgoraRTC.Logger.debug('this is debug');
 
-var client, localStream, camera, microphone;
+var client, localStream, camera, microphone, socket;
 
 var audioSelect = document.querySelector('select#audioSource');
 var videoSelect = document.querySelector('select#videoSource');
+
+
+function initSocketIO() {
+  var host = window.location.host;
+  socket = io.connect(host);
+  // socket.on('message', function(data){
+  //     alert(data);
+  //     document.getElementById('ultext').innerHTML = data;
+  // });
+}
+
+function calluser1001() {
+  socket.emit("message", { msg: 'callingfrom-admin-001' });
+}
 
 function join() {
   document.getElementById("join").disabled = true;
@@ -176,11 +195,34 @@ function join() {
 
 function leave() {
   document.getElementById("leave").disabled = true;
-  client.leave(function () {
-    console.log("Leavel channel successfully");
-  }, function (err) {
-    console.log("Leave channel failed");
-  });
+  try {
+
+    if(client) {
+      client.leave(function () {
+        console.log("Leavel channel successfully");
+      }, function (err) {
+        console.log("Leave channel failed");
+      });
+    }
+
+    var userAgent = navigator.userAgent;
+    if (userAgent.indexOf("Firefox") != -1 || userAgent.indexOf("Chrome") !=-1) {
+      window.location.href="about:blank";
+      window.close();
+      open(location, '_self').close();
+      window.opener = null;
+      window.open("", "_self");
+      window.close();
+    } else {
+      window.opener = null;
+      window.open("", "_self");
+      window.close();
+    };
+
+  } catch (error) {
+    console.log(error);
+  }
+
 }
 
 function publish() {
@@ -221,6 +263,9 @@ function getDevices() {
 //audioSelect.onchange = getDevices;
 //videoSelect.onchange = getDevices;
 getDevices();
+
+initSocketIO();
+
 </script>
 </body>
 </html>

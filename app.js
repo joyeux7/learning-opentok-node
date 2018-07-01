@@ -33,7 +33,12 @@ io.on('connection', function(socket) {
 
   socket.on("message", function(obj) {
     console.log('the websokcet message is: go1' + obj);
-    io.emit("message", 'hello1#');
+
+    if(obj.msg == 'callingfrom-admin-001') {
+      io.emit("callingfrom-admin-001", 'callingfrom-admin-001');
+    } else {
+      io.emit("message", 'hello1#');
+    }
   });
 });
 
