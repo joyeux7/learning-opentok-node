@@ -22,15 +22,11 @@
 <div id="div_join" class="panel panel-default">
 <div class="panel-body">
 
-    <button id="join" class="btn btn-primary" onclick="calluser1001()">Call ID=1001的用户</button>
+  <button id="join" class="btn btn-primary" onclick="calluser1001()">Call ID=1001的用户</button>
+  <button id="leave" class="btn btn-primary" onclick="leave()">挂断</button>
+  <button id="publish" class="btn btn-primary" onclick="publish()" style="display:none">Publish</button>
+  <button id="unpublish" class="btn btn-primary" onclick="unpublish()" style="display:none">Unpublish</button>
 
-Key: <input id="key" type="text" value="2576414954004eb5b71a7d83d27674e0" size="36"></input>
-Channel: <input id="channel" type="text" value="1001" size="4"></input>
-Host: <input id="video" type="checkbox" checked></input>
-<button id="join" class="btn btn-primary" onclick="join()">Join</button>
-<button id="leave" class="btn btn-primary" onclick="leave()">Leave</button>
-<button id="publish" class="btn btn-primary" onclick="publish()">Publish</button>
-<button id="unpublish" class="btn btn-primary" onclick="unpublish()">Unpublish</button>
 </div>
 </div>
 
@@ -55,10 +51,6 @@ Host: <input id="video" type="checkbox" checked></input>
 
 <script language="javascript">
 
-if(!AgoraRTC.checkSystemRequirements()) {
-  alert("browser is no support webRTC");
-}
-
 /* select Log type */
 // AgoraRTC.Logger.setLogLevel(AgoraRTC.Logger.NONE);
 // AgoraRTC.Logger.setLogLevel(AgoraRTC.Logger.ERROR);
@@ -73,6 +65,9 @@ AgoraRTC.Logger.info('this is info');
 AgoraRTC.Logger.debug('this is debug');
 
 var client, localStream, camera, microphone, socket;
+var appKey = '2576414954004eb5b71a7d83d27674e0';
+var userid = '1001';   //hardcode here;
+var isHost = true;
 
 var audioSelect = document.querySelector('select#audioSource');
 var videoSelect = document.querySelector('select#videoSource');
@@ -89,26 +84,26 @@ function initSocketIO() {
 
 function calluser1001() {
   socket.emit("message", { msg: 'callingfrom-admin-001' });
+  join();
 }
 
 function join() {
-  document.getElementById("join").disabled = true;
   document.getElementById("video").disabled = true;
   var channel_key = null;
 
-  console.log("Init AgoraRTC client with vendor key: " + key.value);
+  console.log("Init AgoraRTC client with vendor key: " + appKey);
   client = AgoraRTC.createClient({mode: 'interop'});
-  client.init(key.value, function () {
+  client.init(appKey, function () {
     console.log("AgoraRTC client initialized");
-    client.join(channel_key, channel.value, null, function(uid) {
+    client.join(channel_key, userid, null, function(uid) {
       console.log("User " + uid + " join channel successfully");
 
-      if (document.getElementById("video").checked) {
+      if (isHost) {
         camera = videoSource.value;
         microphone = audioSource.value;
-        localStream = AgoraRTC.createStream({streamID: uid, audio: true, cameraId: camera, microphoneId: microphone, video: document.getElementById("video").checked, screen: false});
+        localStream = AgoraRTC.createStream({streamID: uid, audio: true, cameraId: camera, microphoneId: microphone, video: isHost, screen: false});
         //localStream = AgoraRTC.createStream({streamID: uid, audio: false, cameraId: camera, microphoneId: microphone, video: false, screen: true, extensionId: 'minllpmhdgpndnkomcoccfekfegnlikg'});
-        if (document.getElementById("video").checked) {
+        if (isHost) {
           localStream.setVideoProfile('720p_3');
           
         }

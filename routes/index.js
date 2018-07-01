@@ -44,6 +44,10 @@ router.get('/agorademo', function (req, res) {
   res.render('agora', { title: 'Wangjiang chat demo' });
 });
 
+router.get('/agoraanswer', function (req, res) {
+  res.render('agoraanswer', { title: 'Wangjiang chat demo' });
+});
+
 /**
  * GET /session redirects to /room/session
  */
